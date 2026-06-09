@@ -59,7 +59,7 @@ export function useAmbientEngine(mix: TrackMix, soundPlaying: boolean) {
       if (!voice) return
 
       const shouldPlay = soundPlaying && setting.enabled
-      const targetGain = shouldPlay ? (setting.volume / 100) * 0.85 : 0
+      const targetGain = shouldPlay ? (setting.volume / 100) * voice.gainScale : 0
 
       const currentGain = voice.gain.gain.value
       voice.gain.gain.cancelScheduledValues(context.currentTime)

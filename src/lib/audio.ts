@@ -4,6 +4,7 @@ export type AmbientVoice = {
   audioEl: HTMLAudioElement | null
   assetName: string
   gain: GainNode
+  gainScale: number
   elGain: GainNode | null
   source: AudioScheduledSourceNode | null
   trackId: TrackId
@@ -30,6 +31,21 @@ const AUDIO_ASSETS: Partial<Record<TrackId, AudioAsset>> = {
     mime: 'audio/ogg; codecs=vorbis',
     name: 'Wind chime in slight breeze',
   },
+}
+
+const TRACK_GAIN_SCALE: Record<TrackId, number> = {
+  brown_noise: 0.45,
+  cafe: 0.28,
+  fireplace: 0.38,
+  forest: 0.26,
+  lofi: 0.22,
+  ocean: 0.36,
+  rain: 0.42,
+  stream: 0.34,
+  temple_bell: 0.18,
+  typewriter: 0.24,
+  white_noise: 0.34,
+  wind_chime: 0.2,
 }
 
 function filteredNoise(context: AudioContext, trackId: TrackId) {
@@ -153,15 +169,23 @@ export function createAmbientVoice(context: AudioContext, trackId: TrackId): Amb
   if (asset) {
     try {
       const { audioEl, elGain } = connectRealAudioSource(context, asset, gain)
-      return { audioEl, assetName: asset.name, elGain, gain, source: null, trackId }
+      return { audioEl, assetName: asset.name, elGain, gain, gainScale: TRACK_GAIN_SCALE[trackId], source: null, trackId }
     } catch {
       const source = connectSynthSource(context, trackId, gain)
-      return { audioEl: null, assetName: 'Synthetic fallback', elGain: null, gain, source, trackId }
+      return {
+        audioEl: null,
+        assetName: 'Synthetic fallback',
+        elGain: null,
+        gain,
+        gainScale: TRACK_GAIN_SCALE[trackId],
+        source,
+        trackId,
+      }
     }
   }
 
   const source = connectSynthSource(context, trackId, gain)
-  return { audioEl: null, assetName: 'Synthetic fallback', elGain: null, gain, source, trackId }
+  return { audioEl: null, assetName: 'Synthetic fallback', elGain: null, gain, gainScale: TRACK_GAIN_SCALE[trackId], source, trackId }
 }
 
 export function startVoice(voice: AmbientVoice): void {
@@ -198,28 +222,32 @@ export function playCueTone(context: AudioContext, intensity: BreakIntensity, vo
   if (volumePercent <= 0) return
 
   const now = context.currentTime
-  const gain = context.createGain()
-  const primary = context.createOscillator()
-  const secondary = context.createOscillator()
-  const volume = (volumePercent / 100) * (intensity === 'gentle' ? 0.055 : intensity === 'standard' ? 0.078 : 0.105)
-  const duration = intensity === 'strong' ? 0.82 : intensity === 'standard' ? 0.56 : 0.42
+  const output = context.createGain()
+  const filter = context.createBiquadFilter()
+  const baseVolume = intensity === 'gentle' ? 0.036 : intensity === 'standard' ? 0.048 : 0.062
+  const volume = (volumePercent / 100) * baseVolume
+  const tones = intensity === 'strong' ? [523.25, 659.25, 783.99] : intensity === 'standard' ? [523.25, 659.25] : [587.33, 739.99]
 
-  primary.type = 'sine'
-  primary.frequency.setValueAtTime(intensity === 'gentle' ? 740 : 880, now)
-  primary.frequency.exponentialRampToValueAtTime(intensity === 'strong' ? 1240 : 980, now + duration)
-  secondary.type = 'triangle'
-  secondary.frequency.setValueAtTime(intensity === 'strong' ? 520 : 440, now)
+  filter.type = 'lowpass'
+  filter.frequency.value = 2200
+  output.connect(filter).connect(context.destination)
 
-  gain.gain.setValueAtTime(0.0001, now)
-  gain.gain.linearRampToValueAtTime(volume, now + 0.03)
-  gain.gain.exponentialRampToValueAtTime(0.0001, now + duration)
+  tones.forEach((frequency, index) => {
+    const start = now + index * 0.09
+    const duration = intensity === 'strong' ? 0.62 : 0.48
+    const oscillator = context.createOscillator()
+    const toneGain = context.createGain()
 
-  primary.connect(gain)
-  secondary.connect(gain)
-  gain.connect(context.destination)
+    oscillator.type = 'sine'
+    oscillator.frequency.setValueAtTime(frequency, start)
+    oscillator.frequency.exponentialRampToValueAtTime(frequency * 0.992, start + duration)
 
-  primary.start(now)
-  secondary.start(now + 0.04)
-  primary.stop(now + duration)
-  secondary.stop(now + duration + 0.04)
+    toneGain.gain.setValueAtTime(0.0001, start)
+    toneGain.gain.linearRampToValueAtTime(volume / (index + 1), start + 0.025)
+    toneGain.gain.exponentialRampToValueAtTime(0.0001, start + duration)
+
+    oscillator.connect(toneGain).connect(output)
+    oscillator.start(start)
+    oscillator.stop(start + duration + 0.02)
+  })
 }

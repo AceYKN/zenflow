@@ -48,7 +48,7 @@ export function SettingsPanel() {
       <SettingRow label="时间格式">
         <Segmented<TimeFormat> value={timeFormat} values={['24h', '12h']} labels={['24h', '12h']} onChange={setTimeFormat} />
       </SettingRow>
-      <SettingRow label="夜间模式">
+      <SettingRow label="主题">
         <Segmented<ThemeMode>
           value={theme}
           values={['system', 'light', 'moss', 'sakura', 'indigo', 'dark']}

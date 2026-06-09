@@ -35,9 +35,8 @@ export function Drawer({
 }
 
 function drawerTitle(drawer: NonNullable<DrawerMode>) {
-  if (drawer === 'scene') return '沉浸之境'
+  if (drawer === 'scene') return '场景'
   if (drawer === 'audio') return '环境音效'
-  if (drawer === 'break') return '学习断点'
   if (drawer === 'timer') return '番茄计时'
   if (drawer === 'stats') return '学习统计'
   if (drawer === 'notes') return '笔记任务'
@@ -45,9 +44,8 @@ function drawerTitle(drawer: NonNullable<DrawerMode>) {
 }
 
 function drawerEyebrow(drawer: NonNullable<DrawerMode>) {
-  if (drawer === 'scene') return 'ZenKyokai'
+  if (drawer === 'scene') return 'Background + Sound'
   if (drawer === 'audio') return 'ZenAudio'
-  if (drawer === 'break') return 'ZenBreak'
   if (drawer === 'timer') return 'ZenTimer'
   if (drawer === 'stats') return 'ZenStats'
   if (drawer === 'notes') return 'ZenNote'

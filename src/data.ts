@@ -16,7 +16,7 @@ import {
 export type ClockStyle = 'ink' | 'dial' | 'flip'
 export type TimeFormat = '24h' | '12h'
 export type ThemeMode = 'system' | 'light' | 'moss' | 'sakura' | 'indigo' | 'dark'
-export type DrawerMode = 'scene' | 'audio' | 'break' | 'timer' | 'stats' | 'notes' | 'settings' | null
+export type DrawerMode = 'scene' | 'audio' | 'timer' | 'stats' | 'notes' | 'settings' | null
 export type BreakIntensity = 'gentle' | 'standard' | 'strong'
 export type TimerMode = 'focus' | 'short' | 'long'
 export type DaySegment = 'morning' | 'afternoon' | 'evening'
@@ -63,7 +63,6 @@ export type Scene = Preset & {
   description: string
   tone: string
   accent: string
-  forceDark?: boolean
 }
 
 export type BreakSettings = {
@@ -111,7 +110,7 @@ export const tracks: TrackMeta[] = [
     label: 'Rain',
     kind: '自然',
     description: '室外连绵细雨，贴近窗纸。',
-    defaultVolume: 70,
+    defaultVolume: 48,
     icon: CloudRain,
   },
   {
@@ -120,7 +119,7 @@ export const tracks: TrackMeta[] = [
     label: 'Forest',
     kind: '自然',
     description: '低密度鸟鸣与远处树声。',
-    defaultVolume: 50,
+    defaultVolume: 32,
     icon: TreeEvergreen,
   },
   {
@@ -129,7 +128,7 @@ export const tracks: TrackMeta[] = [
     label: 'Stream',
     kind: '自然',
     description: '细小流水声，适合长读。',
-    defaultVolume: 42,
+    defaultVolume: 34,
     icon: Waves,
   },
   {
@@ -138,7 +137,7 @@ export const tracks: TrackMeta[] = [
     label: 'Ocean',
     kind: '自然',
     description: '深沉缓慢的海浪拍岸。',
-    defaultVolume: 38,
+    defaultVolume: 36,
     icon: Waves,
   },
   {
@@ -147,7 +146,7 @@ export const tracks: TrackMeta[] = [
     label: 'Cafe',
     kind: '环境',
     description: '低频室内人声，不抢注意力。',
-    defaultVolume: 58,
+    defaultVolume: 28,
     icon: Coffee,
   },
   {
@@ -156,7 +155,7 @@ export const tracks: TrackMeta[] = [
     label: 'Fire',
     kind: '环境',
     description: '木柴燃烧的细碎裂响。',
-    defaultVolume: 30,
+    defaultVolume: 34,
     icon: Campfire,
   },
   {
@@ -165,7 +164,7 @@ export const tracks: TrackMeta[] = [
     label: 'Keys',
     kind: '环境',
     description: '复古机械按键和回车声。',
-    defaultVolume: 26,
+    defaultVolume: 20,
     icon: Keyboard,
   },
   {
@@ -174,7 +173,7 @@ export const tracks: TrackMeta[] = [
     label: 'White',
     kind: '纯音',
     description: '平坦频谱，用于遮蔽杂声。',
-    defaultVolume: 52,
+    defaultVolume: 36,
     icon: WaveSawtooth,
   },
   {
@@ -183,7 +182,7 @@ export const tracks: TrackMeta[] = [
     label: 'Brown',
     kind: '纯音',
     description: '更低频、更温和的噪声底。',
-    defaultVolume: 48,
+    defaultVolume: 34,
     icon: SpeakerHigh,
   },
   {
@@ -192,7 +191,7 @@ export const tracks: TrackMeta[] = [
     label: 'Lo-Fi',
     kind: '音乐',
     description: '慵懒钢琴与轻微黑胶质感。',
-    defaultVolume: 34,
+    defaultVolume: 22,
     icon: MusicNotes,
   },
   {
@@ -201,7 +200,7 @@ export const tracks: TrackMeta[] = [
     label: 'Chime',
     kind: '日式',
     description: '偶发玻璃风铃，轻而不惊。',
-    defaultVolume: 28,
+    defaultVolume: 14,
     icon: Wind,
   },
   {
@@ -210,7 +209,7 @@ export const tracks: TrackMeta[] = [
     label: 'Bell',
     kind: '日式',
     description: '低沉铜钟余韵，间隔很长。',
-    defaultVolume: 16,
+    defaultVolume: 10,
     icon: Bell,
   },
 ]
@@ -231,51 +230,50 @@ export const scenes: Scene[] = [
     id: 'rain-study',
     name: '雨夜书斋',
     description: '窗边雨滴、炉火、偶尔一声风铃。',
-    tone: '暖黄偏移',
+    tone: '推荐音景 + 暖色背景',
     accent: '#8b6f47',
-    mix: { rain: 70, fireplace: 30, wind_chime: 20 },
+    mix: { rain: 48, fireplace: 26, wind_chime: 12 },
   },
   {
     id: 'morning-temple',
     name: '山寺晨钟',
     description: '远山晨雾、林声与低沉钟声。',
-    tone: '清冷青灰',
+    tone: '推荐音景 + 清冷背景',
     accent: '#5f7c78',
-    mix: { forest: 50, wind_chime: 34, white_noise: 18, temple_bell: 15 },
+    mix: { forest: 32, wind_chime: 12, white_noise: 16, temple_bell: 8 },
   },
   {
     id: 'sunny-garden',
     name: '晴日庭院',
     description: '枯山水石庭，溪流与自然低声。',
-    tone: '明亮米白',
+    tone: '推荐音景 + 明亮背景',
     accent: '#4a7c59',
-    mix: { stream: 42, forest: 28, wind_chime: 16 },
+    mix: { stream: 34, forest: 22, wind_chime: 10 },
   },
   {
     id: 'deep-night',
     name: '深夜专注',
-    description: '近纯黑夜色，白噪与棕噪铺底。',
-    tone: '深墨靛夜',
+    description: '低亮度背景，白噪与棕噪铺底。',
+    tone: '推荐音景 + 低亮背景',
     accent: '#5c5490',
-    forceDark: true,
-    mix: { white_noise: 80, brown_noise: 30, ocean: 20 },
+    mix: { white_noise: 42, brown_noise: 28, ocean: 20 },
   },
   {
     id: 'sunny-cafe',
     name: '晴日咖啡',
     description: '暖光漫射、低人声和轻柔 Lo-Fi。',
-    tone: '暖橙轻偏移',
+    tone: '推荐音景 + 暖光背景',
     accent: '#a16c47',
-    mix: { cafe: 60, lofi: 40 },
+    mix: { cafe: 28, lofi: 18 },
   },
 ]
 
 export const presets: Preset[] = [
-  { id: 'rain-study', name: '雨夜书房', mix: { rain: 70, fireplace: 30, wind_chime: 20 } },
-  { id: 'tea-room', name: '山中茶室', mix: { forest: 50, wind_chime: 40, white_noise: 20 } },
-  { id: 'sunny-cafe', name: '晴日咖啡', mix: { cafe: 60, lofi: 40 } },
-  { id: 'deep-sea', name: '深海专注', mix: { white_noise: 80, brown_noise: 30, ocean: 20 } },
-  { id: 'mountain-retreat', name: '深山静修', mix: { stream: 40, temple_bell: 15, forest: 30 } },
+  { id: 'rain-study', name: '雨夜书房', mix: { rain: 48, fireplace: 26, wind_chime: 12 } },
+  { id: 'tea-room', name: '山中茶室', mix: { forest: 32, wind_chime: 12, white_noise: 16 } },
+  { id: 'sunny-cafe', name: '晴日咖啡', mix: { cafe: 28, lofi: 18 } },
+  { id: 'deep-sea', name: '深海专注', mix: { white_noise: 42, brown_noise: 28, ocean: 20 } },
+  { id: 'mountain-retreat', name: '深山静修', mix: { stream: 34, temple_bell: 8, forest: 22 } },
 ]
 
 export const breakPrompts = [
@@ -293,7 +291,7 @@ export const defaultBreakSettings: BreakSettings = {
   minMinutes: 15,
   maxMinutes: 30,
   recallSeconds: 5,
-  cueVolume: 60,
+  cueVolume: 42,
   intensity: 'gentle',
 }
 

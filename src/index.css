@@ -44,33 +44,33 @@
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme]) {
-    --paper: #101419;
-    --paper-2: #171d23;
-    --ink: #f2eee7;
-    --muted: #c8c1b4;
-    --muted-2: #9c9384;
-    --focus: #9cc8a5;
-    --rest: #b7acd9;
-    --break: #e2a08c;
-    --line: rgba(226, 216, 194, 0.22);
-    --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
-    --surface: rgba(20, 26, 31, 0.7);
-    --surface-strong: rgba(27, 34, 40, 0.84);
-    --field: rgba(246, 238, 224, 0.12);
-    --chrome: rgba(14, 19, 24, 0.7);
-    --panel: rgba(16, 21, 26, 0.94);
-    --backdrop: rgba(7, 10, 13, 0.34);
-    --focus-soft: rgba(156, 200, 165, 0.16);
-    --rest-soft: rgba(183, 172, 217, 0.16);
+    --paper: #1d1f1b;
+    --paper-2: #272820;
+    --ink: #f3eee4;
+    --muted: #c9c0ad;
+    --muted-2: #9f9687;
+    --focus: #a7c8a2;
+    --rest: #c1b5d4;
+    --break: #df9d86;
+    --line: rgba(232, 221, 197, 0.22);
+    --shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+    --surface: rgba(38, 40, 33, 0.7);
+    --surface-strong: rgba(48, 50, 41, 0.84);
+    --field: rgba(246, 238, 224, 0.13);
+    --chrome: rgba(28, 30, 25, 0.74);
+    --panel: rgba(30, 32, 27, 0.95);
+    --backdrop: rgba(11, 12, 10, 0.3);
+    --focus-soft: rgba(167, 200, 162, 0.16);
+    --rest-soft: rgba(193, 181, 212, 0.16);
     --code-bg: rgba(246, 238, 224, 0.12);
-    --toggle-off: #4b514c;
-    --flip-bg: #f2eee7;
-    --flip-fg: #14181d;
-    --flip-shadow: 0 16px 34px rgba(0, 0, 0, 0.28), inset 0 -1px 0 rgba(20, 24, 29, 0.12);
-    --image-wash: linear-gradient(180deg, rgba(9, 13, 18, 0.28), rgba(9, 13, 18, 0.7));
-    --image-filter: saturate(0.68) brightness(0.46) contrast(1.08);
-    --veil: radial-gradient(ellipse at center, rgba(20, 27, 33, 0.18), rgba(15, 22, 28, 0.72) 62%, rgba(6, 9, 12, 0.94));
-    --side-veil: linear-gradient(90deg, rgba(6, 9, 12, 0.88), transparent 36%, transparent 66%, rgba(6, 9, 12, 0.88));
+    --toggle-off: #545449;
+    --flip-bg: #f3eee4;
+    --flip-fg: #24251f;
+    --flip-shadow: 0 16px 34px rgba(0, 0, 0, 0.24), inset 0 -1px 0 rgba(20, 24, 29, 0.12);
+    --image-wash: linear-gradient(180deg, rgba(31, 31, 25, 0.22), rgba(31, 31, 25, 0.58));
+    --image-filter: saturate(0.72) brightness(0.62) contrast(1.02);
+    --veil: radial-gradient(ellipse at center, rgba(42, 43, 35, 0.12), rgba(31, 32, 27, 0.58) 62%, rgba(20, 21, 18, 0.86));
+    --side-veil: linear-gradient(90deg, rgba(18, 19, 16, 0.78), transparent 36%, transparent 66%, rgba(18, 19, 16, 0.78));
   }
 }
 
@@ -125,35 +125,34 @@
   --side-veil: linear-gradient(90deg, rgba(248, 235, 233, 0.8), transparent 28%, transparent 72%, rgba(248, 235, 233, 0.78));
 }
 
-:root[data-theme='indigo'],
 :root[data-theme='dark'] {
-  --paper: #101419;
-  --paper-2: #171d23;
-  --ink: #f2eee7;
-  --muted: #c8c1b4;
-  --muted-2: #9c9384;
-  --focus: #9cc8a5;
-  --rest: #b7acd9;
-  --break: #e2a08c;
-  --line: rgba(226, 216, 194, 0.22);
-  --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
-  --surface: rgba(20, 26, 31, 0.7);
-  --surface-strong: rgba(27, 34, 40, 0.84);
-  --field: rgba(246, 238, 224, 0.12);
-  --chrome: rgba(14, 19, 24, 0.7);
-  --panel: rgba(16, 21, 26, 0.94);
-  --backdrop: rgba(7, 10, 13, 0.34);
-  --focus-soft: rgba(156, 200, 165, 0.16);
-  --rest-soft: rgba(183, 172, 217, 0.16);
+  --paper: #1d1f1b;
+  --paper-2: #272820;
+  --ink: #f3eee4;
+  --muted: #c9c0ad;
+  --muted-2: #9f9687;
+  --focus: #a7c8a2;
+  --rest: #c1b5d4;
+  --break: #df9d86;
+  --line: rgba(232, 221, 197, 0.22);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.32);
+  --surface: rgba(38, 40, 33, 0.7);
+  --surface-strong: rgba(48, 50, 41, 0.84);
+  --field: rgba(246, 238, 224, 0.13);
+  --chrome: rgba(28, 30, 25, 0.74);
+  --panel: rgba(30, 32, 27, 0.95);
+  --backdrop: rgba(11, 12, 10, 0.3);
+  --focus-soft: rgba(167, 200, 162, 0.16);
+  --rest-soft: rgba(193, 181, 212, 0.16);
   --code-bg: rgba(246, 238, 224, 0.12);
-  --toggle-off: #4b514c;
-  --flip-bg: #f2eee7;
-  --flip-fg: #14181d;
-  --flip-shadow: 0 16px 34px rgba(0, 0, 0, 0.28), inset 0 -1px 0 rgba(20, 24, 29, 0.12);
-  --image-wash: linear-gradient(180deg, rgba(9, 13, 18, 0.28), rgba(9, 13, 18, 0.7));
-  --image-filter: saturate(0.68) brightness(0.46) contrast(1.08);
-  --veil: radial-gradient(ellipse at center, rgba(20, 27, 33, 0.18), rgba(15, 22, 28, 0.72) 62%, rgba(6, 9, 12, 0.94));
-  --side-veil: linear-gradient(90deg, rgba(6, 9, 12, 0.88), transparent 36%, transparent 66%, rgba(6, 9, 12, 0.88));
+  --toggle-off: #545449;
+  --flip-bg: #f3eee4;
+  --flip-fg: #24251f;
+  --flip-shadow: 0 16px 34px rgba(0, 0, 0, 0.24), inset 0 -1px 0 rgba(20, 24, 29, 0.12);
+  --image-wash: linear-gradient(180deg, rgba(31, 31, 25, 0.22), rgba(31, 31, 25, 0.58));
+  --image-filter: saturate(0.72) brightness(0.62) contrast(1.02);
+  --veil: radial-gradient(ellipse at center, rgba(42, 43, 35, 0.12), rgba(31, 32, 27, 0.58) 62%, rgba(20, 21, 18, 0.86));
+  --side-veil: linear-gradient(90deg, rgba(18, 19, 16, 0.78), transparent 36%, transparent 66%, rgba(18, 19, 16, 0.78));
 }
 
 :root[data-theme='indigo'] {
@@ -165,11 +164,25 @@
   --focus: #93b9a2;
   --rest: #b4b5dc;
   --break: #e0a090;
+  --line: rgba(226, 216, 194, 0.22);
+  --shadow: 0 24px 70px rgba(0, 0, 0, 0.38);
   --surface: rgba(24, 35, 48, 0.68);
   --surface-strong: rgba(33, 47, 64, 0.84);
+  --field: rgba(246, 238, 224, 0.12);
   --chrome: rgba(12, 21, 31, 0.72);
   --panel: rgba(14, 24, 35, 0.94);
+  --backdrop: rgba(7, 10, 13, 0.34);
+  --focus-soft: rgba(147, 185, 162, 0.16);
+  --rest-soft: rgba(180, 181, 220, 0.16);
+  --code-bg: rgba(246, 238, 224, 0.12);
+  --toggle-off: #4b5360;
+  --flip-bg: #f4efe6;
+  --flip-fg: #141c25;
+  --flip-shadow: 0 16px 34px rgba(0, 0, 0, 0.28), inset 0 -1px 0 rgba(20, 24, 29, 0.12);
+  --image-wash: linear-gradient(180deg, rgba(9, 13, 18, 0.28), rgba(9, 13, 18, 0.68));
   --image-filter: saturate(0.72) brightness(0.5) contrast(1.05) hue-rotate(8deg);
+  --veil: radial-gradient(ellipse at center, rgba(20, 27, 33, 0.18), rgba(15, 22, 28, 0.7) 62%, rgba(6, 9, 12, 0.92));
+  --side-veil: linear-gradient(90deg, rgba(6, 9, 12, 0.86), transparent 36%, transparent 66%, rgba(6, 9, 12, 0.86));
 }
 
 * {

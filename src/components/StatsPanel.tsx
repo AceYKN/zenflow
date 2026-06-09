@@ -102,7 +102,11 @@ export function StatsPanel() {
             background: `conic-gradient(var(--focus) 0 ${morning}%, var(--rest) ${morning}% ${morning + afternoon}%, var(--break) ${morning + afternoon}% 100%)`,
           }}
         />
-        <div className="legend"><span>上午</span><span>下午</span><span>晚上</span></div>
+        <div className="legend">
+          <span><i className="legend-focus" />上午 {formatDuration(today.segments.morning)}</span>
+          <span><i className="legend-rest" />下午 {formatDuration(today.segments.afternoon)}</span>
+          <span><i className="legend-break" />晚上 {formatDuration(today.segments.evening)}</span>
+        </div>
       </section>
       <section className="chart-panel">
         <h3>近 16 周热力</h3>

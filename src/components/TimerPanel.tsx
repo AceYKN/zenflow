@@ -2,9 +2,10 @@ import { Pause, Play } from '@phosphor-icons/react'
 import { timerModeLabels, type TimerMode } from '@/data'
 import { useZenStore } from '@/store'
 import { formatTimer, getTimerDuration } from '@/utils/format'
+import { BreakPanel } from './BreakPanel'
 import { NumberField } from './NumberField'
 
-export function TimerPanel() {
+export function TimerPanel({ onTestBreak }: { onTestBreak: () => void }) {
   const timer = useZenStore((state) => state.timer)
   const timerSettings = useZenStore((state) => state.timerSettings)
   const setTimerMode = useZenStore((state) => state.setTimerMode)
@@ -88,6 +89,10 @@ export function TimerPanel() {
           onChange={(value) => setTimerSettings((current) => ({ ...current, longMinutes: value }))}
         />
       </div>
+      <section className="sub-panel">
+        <h3>主动回忆提示</h3>
+        <BreakPanel onTestBreak={onTestBreak} />
+      </section>
     </section>
   )
 }

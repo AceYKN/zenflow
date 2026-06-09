@@ -15,7 +15,6 @@ import { getFlowIndex } from '@/utils/stats'
 import { AudioPanel } from '@/components/AudioPanel'
 import { BackgroundCanvas } from '@/components/BackgroundCanvas'
 import { BottomStatus } from '@/components/BottomStatus'
-import { BreakPanel } from '@/components/BreakPanel'
 import { Drawer } from '@/components/Drawer'
 import { NavBar } from '@/components/NavBar'
 import { NotesPanel } from '@/components/NotesPanel'
@@ -44,7 +43,6 @@ function App() {
   const setClockStyle = useZenStore((state) => state.setClockStyle)
   const setFocusActive = useZenStore((state) => state.setFocusActive)
   const setSoundPlaying = useZenStore((state) => state.setSoundPlaying)
-  const setTheme = useZenStore((state) => state.setTheme)
   const soundPlaying = useZenStore((state) => state.soundPlaying)
   const stats = useZenStore((state) => state.stats)
   const theme = useZenStore((state) => state.theme)
@@ -122,6 +120,19 @@ function App() {
     recordBreakCue,
   ])
 
+  const previewBreak = useCallback(async () => {
+    const ready = await ensureContext()
+    setAudioStatus(ready ? 'ready' : 'blocked')
+    if (!ready) return
+
+    const prompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)]
+    playCue(breakSettings.intensity, breakSettings.cueVolume)
+    setBreakNotice(prompt)
+
+    if (noticeTimerRef.current) window.clearTimeout(noticeTimerRef.current)
+    noticeTimerRef.current = window.setTimeout(() => setBreakNotice(''), breakSettings.recallSeconds * 1000)
+  }, [breakSettings.cueVolume, breakSettings.intensity, breakSettings.recallSeconds, ensureContext, playCue, setAudioStatus])
+
   useBreakScheduler({ inputFocused, onCue: triggerBreak })
 
   const shortcutActions = useMemo(
@@ -153,12 +164,9 @@ function App() {
       <div className="image-bg" aria-hidden="true" />
       <NavBar
         activeDrawer={drawer}
-        breakEnabled={breakSettings.enabled}
         focusActive={focusActive}
         soundPlaying={soundPlaying}
-        theme={theme}
         onOpen={setDrawer}
-        onThemeToggle={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
       />
 
       <section className="clock-hero" aria-label="ZenFlow 工作台">
@@ -185,23 +193,17 @@ function App() {
       </section>
 
       <section className="tool-dock" aria-label="功能入口">
-        <DockButton active={drawer === 'scene'} label="境" value={currentScene.name} onClick={() => setDrawer('scene')} />
+        <DockButton active={drawer === 'scene'} label="场景" value={currentScene.name} onClick={() => setDrawer('scene')} />
         <DockButton active={drawer === 'audio'} label="音景" value={soundPlaying ? activeTrackText : '未播放'} onClick={() => setDrawer('audio')} />
         <DockButton active={drawer === 'timer'} label="计时" value={focusActive ? '专注中' : '可选'} onClick={() => setDrawer('timer')} />
         <DockButton active={drawer === 'stats'} label="今日" value={formatChineseDuration(today.focusSeconds)} onClick={() => setDrawer('stats')} />
       </section>
 
-      <button className={breakSettings.enabled ? 'break-pill active' : 'break-pill'} type="button" onClick={() => setDrawer('break')}>
-        <Bell size={17} weight="thin" />
-        ZenBreak {breakSettings.enabled ? `${breakSettings.minMinutes}-${breakSettings.maxMinutes} 分钟` : '未启用'}
-      </button>
-
       {drawer ? (
         <Drawer drawer={drawer} onClose={() => setDrawer(null)}>
           {drawer === 'scene' ? <ScenePanel /> : null}
           {drawer === 'audio' ? <AudioPanel onStartAudio={beginAudio} onToggleAudio={toggleAudio} /> : null}
-          {drawer === 'break' ? <BreakPanel onTestBreak={triggerBreak} /> : null}
-          {drawer === 'timer' ? <TimerPanel /> : null}
+          {drawer === 'timer' ? <TimerPanel onTestBreak={previewBreak} /> : null}
           {drawer === 'stats' ? <StatsPanel /> : null}
           {drawer === 'notes' ? <NotesPanel /> : null}
           {drawer === 'settings' ? <SettingsPanel /> : null}

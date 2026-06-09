@@ -145,7 +145,6 @@ export const useZenStore = create<ZenState>()(
           return {
             currentSceneId: scene.id,
             mix: mixFromPreset(scene, state.mix),
-            theme: scene.forceDark ? 'dark' : state.theme,
           }
         }),
       applyPreset: (preset) => set((state) => ({ mix: mixFromPreset(preset, state.mix) })),

@@ -11,7 +11,6 @@ const intensityLabels: Record<BreakIntensity, string> = {
 
 export function BreakPanel({ onTestBreak }: { onTestBreak: () => void }) {
   const breakSettings = useZenStore((state) => state.breakSettings)
-  const focusActive = useZenStore((state) => state.focusActive)
   const setBreakSettings = useZenStore((state) => state.setBreakSettings)
 
   return (
@@ -80,9 +79,9 @@ export function BreakPanel({ onTestBreak }: { onTestBreak: () => void }) {
         />
         <strong>{breakSettings.cueVolume}%</strong>
       </label>
-      <button className="test-break" type="button" onClick={onTestBreak} disabled={!focusActive}>
+      <button className="test-break" type="button" onClick={onTestBreak}>
         <Bell size={18} weight="thin" />
-        播放一次提示音
+        试听提示音
       </button>
     </section>
   )

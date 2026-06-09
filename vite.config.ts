@@ -19,6 +19,21 @@ export default defineConfig({
     VitePWA({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.svg'],
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: ({ url }) => url.pathname.includes('/audio/') && /\.(mp3|ogg)$/i.test(url.pathname),
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'zenflow-audio',
+              expiration: {
+                maxEntries: 16,
+                maxAgeSeconds: 60 * 60 * 24 * 30,
+              },
+            },
+          },
+        ],
+      },
       manifest: {
         name: 'ZenFlow',
         short_name: 'ZenFlow',

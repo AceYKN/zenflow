@@ -49,7 +49,12 @@ export function SettingsPanel() {
         <Segmented<TimeFormat> value={timeFormat} values={['24h', '12h']} labels={['24h', '12h']} onChange={setTimeFormat} />
       </SettingRow>
       <SettingRow label="夜间模式">
-        <Segmented<ThemeMode> value={theme} values={['system', 'light', 'dark']} labels={['跟随', '日间', '夜间']} onChange={setTheme} />
+        <Segmented<ThemeMode>
+          value={theme}
+          values={['system', 'light', 'moss', 'sakura', 'indigo', 'dark']}
+          labels={['跟随', '和纸', '苔庭', '薄樱', '靛蓝', '夜墨']}
+          onChange={setTheme}
+        />
       </SettingRow>
       <label className="slider-row">
         <span>背景动效</span>

@@ -26,11 +26,10 @@ import { TimerPanel } from '@/components/TimerPanel'
 import { ZenClock } from '@/components/ZenClock'
 
 function App() {
-  const now = useClock()
+  const { now, source, sourceLabel } = useClock()
   const inputFocused = useInputActivity()
   const noticeTimerRef = useRef<number | null>(null)
   const [drawer, setDrawer] = useState<DrawerMode>(null)
-  const [clockHover, setClockHover] = useState(false)
   const [breakNotice, setBreakNotice] = useState('')
 
   const audioStatus = useZenStore((state) => state.audioStatus)
@@ -62,6 +61,10 @@ function App() {
   usePomodoroTimer()
 
   useEffect(() => {
+    if (theme === 'system') {
+      delete document.documentElement.dataset.theme
+      return
+    }
     document.documentElement.dataset.theme = theme
   }, [theme])
 
@@ -160,15 +163,7 @@ function App() {
 
       <section className="clock-hero" aria-label="ZenFlow 工作台">
         <p className="date-line">{formatChineseDate(now)}</p>
-        <div onMouseEnter={() => setClockHover(true)} onMouseLeave={() => setClockHover(false)}>
-          <ZenClock
-            now={now}
-            showSeconds={clockHover}
-            style={clockStyle}
-            timeFormat={timeFormat}
-            onClick={() => setDrawer('settings')}
-          />
-        </div>
+        <ZenClock now={now} showSeconds style={clockStyle} timeFormat={timeFormat} onClick={() => setDrawer('settings')} />
         <p className="tagline">侘寂之间，心流自现</p>
         <div className="hero-actions">
           <button className={focusActive ? 'focus-button active' : 'focus-button'} type="button" onClick={() => void toggleFocus()}>
@@ -184,6 +179,7 @@ function App() {
           <span>{focusActive ? '专注中' : '专注未开始'}</span>
           <strong>{formatChineseDuration(today.focusSeconds)}</strong>
           <span>{audioStatus === 'blocked' ? '点击以开始声音' : soundPlaying ? activeTrackText : '声音未启动'}</span>
+          <span className={`time-source ${source}`}>{sourceLabel}</span>
           <span>心流 {flowIndex}</span>
         </div>
       </section>

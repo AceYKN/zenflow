@@ -2,11 +2,17 @@ import { DownloadSimple } from '@phosphor-icons/react'
 import { useZenStore } from '@/store'
 import { createDailyStats, getDateKey, getRecentDateKeys } from '@/utils/format'
 import {
+  getBestFocusDay,
+  getCurrentStreak,
   getFlowCopy,
   getFlowIndex,
+  getGoalProgress,
   getHeatmapStats,
   getLongestFocusSeconds,
+  getRangeStats,
+  getTotalBreakCount,
   getTotalFocusSeconds,
+  getTotalPomodoroCount,
   getWeekStats,
 } from '@/utils/stats'
 import { formatChineseDuration, formatDuration } from '@/utils/format'
@@ -16,8 +22,14 @@ export function StatsPanel() {
   const dailyGoalMinutes = useZenStore((state) => state.dailyGoalMinutes)
   const today = stats[getDateKey(new Date())] ?? createDailyStats()
   const week = getWeekStats(stats)
-  const heatmap = getHeatmapStats(stats)
+  const heatmap = getHeatmapStats(stats, 112)
   const flowIndex = getFlowIndex(today, dailyGoalMinutes * 60)
+  const goalProgress = getGoalProgress(today.focusSeconds, dailyGoalMinutes * 60)
+  const weekSummary = getRangeStats(stats, 7)
+  const monthSummary = getRangeStats(stats, 30)
+  const seasonSummary = getRangeStats(stats, 112)
+  const bestDay = getBestFocusDay(stats)
+  const currentStreak = getCurrentStreak(stats)
   const segmentTotal = today.segments.morning + today.segments.afternoon + today.segments.evening || 1
   const morning = (today.segments.morning / segmentTotal) * 100
   const afternoon = (today.segments.afternoon / segmentTotal) * 100
@@ -25,7 +37,7 @@ export function StatsPanel() {
   const exportCsv = () => {
     const rows = [
       ['date', 'focus_minutes', 'break_count', 'pomodoro_count', 'longest_minutes'],
-      ...getRecentDateKeys(30).map((date) => {
+      ...getRecentDateKeys(112).map((date) => {
         const day = stats[date] ?? createDailyStats(date)
         return [
           date,
@@ -49,10 +61,25 @@ export function StatsPanel() {
       </div>
       <div className="stat-grid">
         <StatCard label="今日专注" value={formatChineseDuration(today.focusSeconds)} />
+        <StatCard label="目标完成" value={`${goalProgress}%`} />
+        <StatCard label="本周累计" value={formatChineseDuration(weekSummary.focusSeconds)} />
+        <StatCard label="30 日累计" value={formatChineseDuration(monthSummary.focusSeconds)} />
         <StatCard label="历史总时长" value={formatChineseDuration(getTotalFocusSeconds(stats))} />
-        <StatCard label="本周断点" value={`${Object.values(stats).reduce((sum, day) => sum + day.breakCount, 0)} 次`} />
+        <StatCard label="连续专注" value={`${currentStreak} 天`} />
         <StatCard label="最长连续" value={formatChineseDuration(getLongestFocusSeconds(stats))} />
+        <StatCard label="本周番茄" value={`${weekSummary.pomodoroCount} 个`} />
+        <StatCard label="断点提示" value={`${getTotalBreakCount(stats)} 次`} />
+        <StatCard label="番茄总数" value={`${getTotalPomodoroCount(stats)} 个`} />
       </div>
+      <section className="chart-panel">
+        <h3>持续感</h3>
+        <div className="milestone-list">
+          <MetricRow label="近 30 日活跃" value={`${monthSummary.activeDays} 天`} ratio={(monthSummary.activeDays / 30) * 100} />
+          <MetricRow label="近 16 周活跃" value={`${seasonSummary.activeDays} 天`} ratio={(seasonSummary.activeDays / 112) * 100} />
+          <MetricRow label="活跃日均专注" value={formatChineseDuration(monthSummary.averageFocusSeconds)} ratio={(monthSummary.averageFocusSeconds / Math.max(dailyGoalMinutes * 60, 1)) * 100} />
+          <MetricRow label="最佳单日" value={bestDay ? `${bestDay.date} · ${formatChineseDuration(bestDay.focusSeconds)}` : '暂无记录'} ratio={bestDay ? (bestDay.focusSeconds / Math.max(dailyGoalMinutes * 60, 1)) * 100 : 0} />
+        </div>
+      </section>
       <section className="chart-panel">
         <h3>近 7 天</h3>
         <div className="bar-chart">
@@ -78,17 +105,26 @@ export function StatsPanel() {
         <div className="legend"><span>上午</span><span>下午</span><span>晚上</span></div>
       </section>
       <section className="chart-panel">
-        <h3>三十日热力</h3>
+        <h3>近 16 周热力</h3>
         <div className="heatmap">
           {heatmap.map((item) => {
             const max = Math.max(...heatmap.map((day) => day.seconds), 60)
-            return <span key={item.date} title={`${item.date} · ${formatDuration(item.seconds)}`} style={{ opacity: 0.18 + (item.seconds / max) * 0.82 }} />
+            const level = Math.min(4, Math.ceil((item.seconds / max) * 4))
+            return (
+              <span
+                data-level={level}
+                key={item.date}
+                title={`${item.date} · ${formatDuration(item.seconds)}`}
+                style={{ opacity: 0.2 + (item.seconds / max) * 0.8 }}
+              />
+            )
           })}
         </div>
+        <div className="heatmap-legend"><span>少</span><i data-level="1" /><i data-level="2" /><i data-level="3" /><i data-level="4" /><span>多</span></div>
       </section>
       <button className="export-button" type="button" onClick={exportCsv}>
         <DownloadSimple size={17} weight="thin" />
-        导出 CSV
+        导出 16 周 CSV
       </button>
     </section>
   )
@@ -100,6 +136,16 @@ function StatCard({ label, value }: { label: string; value: string }) {
       <span>{label}</span>
       <strong>{value}</strong>
     </article>
+  )
+}
+
+function MetricRow({ label, ratio, value }: { label: string; ratio: number; value: string }) {
+  return (
+    <div className="metric-row">
+      <span>{label}</span>
+      <strong>{value}</strong>
+      <i><b style={{ width: `${Math.min(100, Math.max(0, ratio))}%` }} /></i>
+    </div>
   )
 }
 

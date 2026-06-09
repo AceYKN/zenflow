@@ -1,10 +1,24 @@
 import { useCallback, useEffect, useRef } from 'react'
 import { tracks, type BreakIntensity, type TrackId, type TrackMix } from '@/data'
-import { createAmbientVoice, playCueTone, type AmbientVoice } from '@/lib/audio'
+import {
+  createAmbientVoice,
+  pauseVoice,
+  playCueTone,
+  startVoice,
+  stopVoice,
+  type AmbientVoice,
+} from '@/lib/audio'
 
 export function useAmbientEngine(mix: TrackMix, soundPlaying: boolean) {
   const contextRef = useRef<AudioContext | null>(null)
+  const mixRef = useRef(mix)
+  const soundPlayingRef = useRef(soundPlaying)
   const voicesRef = useRef<Map<TrackId, AmbientVoice>>(new Map())
+
+  useEffect(() => {
+    mixRef.current = mix
+    soundPlayingRef.current = soundPlaying
+  }, [mix, soundPlaying])
 
   const ensureContext = useCallback(async () => {
     try {
@@ -34,33 +48,51 @@ export function useAmbientEngine(mix: TrackMix, soundPlaying: boolean) {
     if (!context) return
 
     tracks.forEach((track) => {
+      const setting = mix[track.id]
       let voice = voicesRef.current.get(track.id)
-      if (!voice) {
+
+      if (!voice && setting.enabled) {
         voice = createAmbientVoice(context, track.id)
         voicesRef.current.set(track.id, voice)
       }
 
-      const setting = mix[track.id]
-      const target = soundPlaying && setting.enabled ? (setting.volume / 100) * 0.34 : 0
+      if (!voice) return
+
+      const shouldPlay = soundPlaying && setting.enabled
+      const targetGain = shouldPlay ? (setting.volume / 100) * 0.85 : 0
+
       const currentGain = voice.gain.gain.value
       voice.gain.gain.cancelScheduledValues(context.currentTime)
       voice.gain.gain.setValueAtTime(currentGain, context.currentTime)
-      voice.gain.gain.linearRampToValueAtTime(target, context.currentTime + (target > 0 ? 1.5 : 1))
+      voice.gain.gain.linearRampToValueAtTime(targetGain, context.currentTime + (targetGain > 0 ? 1.2 : 0.8))
+
+      if (shouldPlay) {
+        startVoice(voice)
+      } else {
+        pauseVoice(voice)
+      }
     })
   }, [mix, soundPlaying])
 
   useEffect(() => {
     const voices = voicesRef.current
+
     const resume = () => {
       if (document.visibilityState === 'visible') {
         void contextRef.current?.resume()
+        if (soundPlayingRef.current) {
+          voices.forEach((voice) => {
+            const setting = mixRef.current[voice.trackId]
+            if (setting?.enabled) startVoice(voice)
+          })
+        }
       }
     }
     document.addEventListener('visibilitychange', resume)
 
     return () => {
       document.removeEventListener('visibilitychange', resume)
-      voices.forEach((voice) => voice.source.stop())
+      voices.forEach((voice) => stopVoice(voice))
       voices.clear()
       void contextRef.current?.close()
     }

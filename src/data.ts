@@ -15,7 +15,7 @@ import {
 
 export type ClockStyle = 'ink' | 'dial' | 'flip'
 export type TimeFormat = '24h' | '12h'
-export type ThemeMode = 'system' | 'light' | 'dark'
+export type ThemeMode = 'system' | 'light' | 'moss' | 'sakura' | 'indigo' | 'dark'
 export type DrawerMode = 'scene' | 'audio' | 'break' | 'timer' | 'stats' | 'notes' | 'settings' | null
 export type BreakIntensity = 'gentle' | 'standard' | 'strong'
 export type TimerMode = 'focus' | 'short' | 'long'

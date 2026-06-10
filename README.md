@@ -1,73 +1,68 @@
-# React + TypeScript + Vite
+# ZenFlow · 静流
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+ZenFlow 是一个带有侘寂美学的沉浸式专注工作台。它把时钟、番茄计时、环境音、场景预设、休息提示、笔记任务和本地统计放在一个安静的页面里，适合阅读、写作、学习和长时间深度工作。
 
-Currently, two official plugins are available:
+## 功能亮点
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- 三种时钟样式：墨迹、圆盘、翻页。
+- 多主题界面：跟随系统、和纸、苔庭、薄樱、靛蓝、夜墨。
+- 场景预设：雨夜书斋、山寺晨钟、晴日庭院、深夜专注、晴日咖啡。
+- 环境音混音：雨声、森林、溪流、海浪、咖啡馆、炉火、打字机、白噪音、棕噪音、Lo-Fi、风铃、晨钟。
+- 专注计时：支持专注/短休/长休模式和每日目标。
+- 休息提示：可配置随机间隔、提示强度、提示音量和提示停留时间。
+- 今日统计：记录专注时长、番茄次数、休息提示次数、最长专注和时段分布。
+- 轻量笔记与任务：在专注过程中记录待办和想法。
+- 本地数据：使用浏览器 `localStorage` 持久化，并支持 JSON 导入/导出。
+- PWA 支持：可安装，环境音资源使用缓存策略提升离线体验。
 
-## React Compiler
+## 快速开始
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm install
+npm run dev
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+常用脚本：
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+```bash
+npm run build
+npm run lint
+npm run preview
 ```
+
+## 技术栈
+
+- React 19
+- TypeScript
+- Vite
+- Zustand
+- Phosphor Icons
+- vite-plugin-pwa
+
+## 项目结构
+
+```text
+src/
+  components/          UI 面板、时钟、导航和抽屉
+  hooks/               时钟、音频、计时、快捷键和专注记录逻辑
+  lib/                 音频播放与合成音相关工具
+  store/               Zustand 状态与持久化
+  utils/               时间格式化和统计计算
+  App.tsx              主工作台
+  data.ts              场景、音轨、主题和默认设置
+public/
+  audio/               自托管环境音资源
+  favicon.svg          ZenFlow 应用图标
+```
+
+## 音频资源
+
+环境音文件放在 `public/audio`，来源和授权说明见 `public/audio/README.md`。音频会在用户点击开始声音后再加载，避免页面首次打开时自动播放或额外请求。
+
+## 数据与隐私
+
+ZenFlow 默认不连接后端。专注记录、设置、笔记和任务都保存在当前浏览器的本地存储中。你可以在设置面板导出 JSON 备份，也可以导入已有备份恢复状态。
+
+## 部署
+
+项目已按 GitHub Pages 场景配置 `base` 路径：在 GitHub Actions 中构建时会自动使用仓库名作为部署前缀；本地开发和普通部署则使用根路径 `/`。

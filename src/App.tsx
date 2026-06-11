@@ -1,7 +1,7 @@
 import { type CSSProperties, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { Bell, Pause, Play, Target } from '@phosphor-icons/react'
 import './App.css'
-import { breakPrompts, scenes, type DrawerMode } from '@/data'
+import { scenes, type DrawerMode } from '@/data'
 import { useAmbientEngine } from '@/hooks/useAmbientEngine'
 import { useBreakScheduler } from '@/hooks/useBreakScheduler'
 import { useClock } from '@/hooks/useClock'
@@ -29,7 +29,7 @@ function App() {
   const inputFocused = useInputActivity()
   const noticeTimerRef = useRef<number | null>(null)
   const [drawer, setDrawer] = useState<DrawerMode>(null)
-  const [breakNotice, setBreakNotice] = useState('')
+  const [cueToastVisible, setCueToastVisible] = useState(false)
 
   const audioStatus = useZenStore((state) => state.audioStatus)
   const breakSettings = useZenStore((state) => state.breakSettings)
@@ -104,13 +104,12 @@ function App() {
 
   const triggerBreak = useCallback(() => {
     if (!focusActive) return
-    const prompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)]
     recordBreakCue()
     playCue(breakSettings.intensity, breakSettings.cueVolume)
-    setBreakNotice(prompt)
+    setCueToastVisible(true)
 
     if (noticeTimerRef.current) window.clearTimeout(noticeTimerRef.current)
-    noticeTimerRef.current = window.setTimeout(() => setBreakNotice(''), breakSettings.recallSeconds * 1000)
+    noticeTimerRef.current = window.setTimeout(() => setCueToastVisible(false), breakSettings.recallSeconds * 1000)
   }, [
     breakSettings.cueVolume,
     breakSettings.intensity,
@@ -125,12 +124,11 @@ function App() {
     setAudioStatus(ready ? 'ready' : 'blocked')
     if (!ready) return
 
-    const prompt = breakPrompts[Math.floor(Math.random() * breakPrompts.length)]
     playCue(breakSettings.intensity, breakSettings.cueVolume)
-    setBreakNotice(prompt)
+    setCueToastVisible(true)
 
     if (noticeTimerRef.current) window.clearTimeout(noticeTimerRef.current)
-    noticeTimerRef.current = window.setTimeout(() => setBreakNotice(''), breakSettings.recallSeconds * 1000)
+    noticeTimerRef.current = window.setTimeout(() => setCueToastVisible(false), breakSettings.recallSeconds * 1000)
   }, [breakSettings.cueVolume, breakSettings.intensity, breakSettings.recallSeconds, ensureContext, playCue, setAudioStatus])
 
   useBreakScheduler({ inputFocused, onCue: triggerBreak })
@@ -210,13 +208,11 @@ function App() {
         </Drawer>
       ) : null}
 
-      {breakNotice ? (
+      {cueToastVisible ? (
         <div className={`break-toast ${breakSettings.intensity}`} role="status" aria-live="polite">
           <Bell size={21} weight="thin" />
           <div>
             <strong>提示音已响</strong>
-            <p>{breakNotice}</p>
-            <span>无需操作，给自己 {breakSettings.recallSeconds} 秒。</span>
           </div>
         </div>
       ) : null}
